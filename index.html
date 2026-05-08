@@ -12,7 +12,7 @@
             touch-action: manipulation;
         }
 
-        /* --- شاشة العداد --- */
+        /* --- تصميم العداد --- */
         #countdown-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%);
@@ -20,16 +20,17 @@
             align-items: center; z-index: 1000; color: #c2185b; text-align: center;
         }
 
-        #countdown-screen h1 { font-family: 'Brush Script MT', cursive; font-size: 7vmin; margin-bottom: 20px; padding: 0 10px; }
+        #countdown-screen h1 { font-family: 'Brush Script MT', cursive; font-size: 8vmin; margin-bottom: 20px; }
         
-        .timer { display: flex; gap: 10px; font-weight: bold; }
-        .time-box { background: rgba(255,255,255,0.4); padding: 15px; border-radius: 15px; min-width: 60px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .time-box span { display: block; font-size: 6vmin; }
-        .time-box label { font-size: 2vmin; color: #5d3f37; }
+        .timer { display: flex; gap: 15px; font-weight: bold; }
+        .time-box { background: rgba(255,255,255,0.3); padding: 15px; border-radius: 10px; min-width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .time-box span { display: block; font-size: 5vmin; }
+        .time-box label { font-size: 2vmin; color: #5d3f37; text-transform: uppercase; }
 
-        /* --- المحتوى الأصلي (مخفي) --- */
+        /* --- باقي ستايل الموقع (مخفي في البداية) --- */
         #main-content { display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; }
 
+        /* --- الكود الأصلي للتورتة والأسطوانة --- */
         .main-container { display: flex; flex-direction: column; align-items: center; z-index: 10; width: 100%; }
         .cake-container { position: relative; display: flex; flex-direction: column-reverse; align-items: center; margin-bottom: 2vh; perspective: 1000px; }
         .layer { width: 40vmin; height: 10vmin; background: linear-gradient(to right, #5d3f37, #7b5e57, #5d3f37); border-radius: 10px; opacity: 0; transform: translateY(-500px) rotateX(20deg); position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
@@ -42,7 +43,7 @@
         .numbers-container { position: absolute; top: -12vmin; left: 50%; transform: translateX(-50%) scale(0); display: flex; gap: 2vmin; z-index: 10; animation: numbers-appear 0.6s ease forwards 3.5s; }
         .number-candle { font-size: 12vmin; font-weight: 900; color: #fff; text-shadow: 1px 1px 0 #ddd, 2px 2px 5px rgba(0,0,0,0.2); position: relative; }
         .flame { width: 3vmin; height: 6vmin; background: linear-gradient(to bottom, transparent 0%, #ff5722 20%, #ffca28 50%, #fff 90%); border-radius: 50% 50% 20% 20%; position: absolute; top: -5vmin; left: 50%; transform: translateX(-50%); opacity: 0; box-shadow: 0 0 20px #ff9800, 0 0 40px #ff5722; animation: flicker 0.1s infinite alternate, show-flame 0.4s forwards 4s; }
-        .Happy__Birthday { color: #c2185b; font-size: 5vmin; font-family: 'Brush Script MT', cursive; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); white-space: nowrap; margin-top: 5vh; text-align: center; min-height: 1.2em; }
+        .Happy__Birthday { color: #c2185b; font-size: 5vmin; font-family: 'Brush Script MT', cursive; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); white-space: nowrap; margin-top: 5vh; text-align: center; }
         .gift-icon { position: fixed; bottom: 20px; right: 20px; font-size: 40px; cursor: pointer; z-index: 100; animation: bounce 2s infinite; }
         .letter-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px; box-sizing: border-box; }
         .scroll-wrapper { position: relative; width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
@@ -71,8 +72,10 @@
 
     <!-- شاشة العداد -->
     <div id="countdown-screen">
-        <h1>مستني اللحظة دي بفارغ الصبر...</h1>
+        <h1>Counting down to the Best Day...</h1>
         <div class="timer">
+            <div class="time-box"><span id="days">00</span><label>Days</label></div>
+            <div class="time-box"><span id="hours">00</span><label>Hrs</label></div>
             <div class="time-box"><span id="minutes">00</span><label>Min</label></div>
             <div class="time-box"><span id="seconds">00</span><label>Sec</label></div>
         </div>
@@ -120,34 +123,54 @@
     </div>
 
     <script>
-        // --- إعداد العداد ليفتح بعد دقيقتين بالظبط من الآن ---
-        const targetDate = new Date().getTime() + (2 * 60 * 1000); 
+        // --- إعدادات العداد ---
+        const targetDate = new Date("May 17, 2026 00:00:00").getTime();
 
         const timerInterval = setInterval(function() {
             const now = new Date().getTime();
             const distance = targetDate - now;
 
             if (distance < 0) {
+                // لو التاريخ جه، افتح الموقع
                 clearInterval(timerInterval);
-                document.getElementById("countdown-screen").style.opacity = "0";
-                setTimeout(() => {
-                    document.getElementById("countdown-screen").style.display = "none";
-                    document.getElementById("main-content").style.display = "flex";
-                    startCakeAnimations();
-                }, 500);
+                document.getElementById("countdown-screen").style.display = "none";
+                document.getElementById("main-content").style.display = "flex";
+                startCakeAnimations();
             } else {
+                // تحديث أرقام العداد
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = d < 10 ? "0"+d : d;
+                document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
                 document.getElementById("minutes").innerText = m < 10 ? "0"+m : m;
                 document.getElementById("seconds").innerText = s < 10 ? "0"+s : s;
             }
         }, 1000);
 
         function startCakeAnimations() {
+            // تشغيل التايب رايتر الخاص بالعنوان
             setTimeout(typeTitle, 4500);
-            createConfetti();
+            
+            // إضافة القصاصات
+            for (let j = 0; j < 50; j++) {
+                let c = document.createElement('div'); 
+                c.style.position = 'absolute';
+                c.style.top = '-10px';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.width = c.style.height = (Math.random() * 6 + 4) + 'px';
+                c.style.backgroundColor = ['#FFC107','#E91E63','#03A9F4','#4CAF50','#FF5722'][Math.floor(Math.random()*5)];
+                c.style.borderRadius = '50%';
+                c.style.zIndex = '5';
+                c.style.animation = `fall ${(Math.random() * 2 + 3)}s linear infinite`;
+                c.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(c);
+            }
         }
 
+        // --- كود الموقع الأصلي ---
         const titleText = "A7la Kol Sana W Enty M3aya Ya Banoty";
         let ti = 0;
         function typeTitle() { 
@@ -163,7 +186,7 @@
         const audio = document.getElementById('music');
 
         function openScroll() {
-            audio.play().catch(e => console.log("Audio needs user interaction first"));
+            audio.play();
             document.getElementById('letterModal').style.display = 'flex';
             setTimeout(() => {
                 document.getElementById('scrollWrapper').classList.add('open');
@@ -187,22 +210,6 @@
             document.getElementById('scrollWrapper').classList.remove('open');
             document.getElementById("message-text").innerHTML = "";
             ci = 0; typing = false;
-        }
-
-        function createConfetti() {
-            for (let j = 0; j < 60; j++) {
-                let c = document.createElement('div'); 
-                c.style.position = 'absolute';
-                c.style.top = '-10px';
-                c.style.left = Math.random() * 100 + 'vw';
-                c.style.width = c.style.height = (Math.random() * 7 + 5) + 'px';
-                c.style.backgroundColor = ['#FFC107','#E91E63','#03A9F4','#4CAF50','#FF5722','#fff'][Math.floor(Math.random()*6)];
-                c.style.borderRadius = '50%';
-                c.style.zIndex = '5';
-                c.style.animation = `fall ${(Math.random() * 2 + 3)}s linear infinite`;
-                c.style.animationDelay = Math.random() * 5 + 's';
-                document.body.appendChild(c);
-            }
         }
 
         const style = document.createElement('style');
