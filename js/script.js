@@ -1,4 +1,4 @@
-const targetDate = new Date("May 10, 2026 00:00:00").getTime();
+const targetDate = new Date("May 17, 2026 00:00:00").getTime();
 
 function checkTime() {
     const now = new Date().getTime();
